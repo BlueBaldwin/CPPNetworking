@@ -1,0 +1,131 @@
+# Visual Studio temporary files and folders
+.vscode/
+.vs/
+bin/
+obj/
+Debug/
+Release/
+x64/
+x86/
+*.suo
+*.user
+*.sdf
+*.opensdf
+*.dbmdl
+*.dbproj.user
+*.sln.docstates
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+CMakeScripts/
+CMakeScripts/
+CMakeDoxyfile.in
+cmake_install.cmake
+install_manifest.txt
+
+# Compiled object files and libraries
+*.suo
+*.user
+*.pdb
+*.idb
+*.ipch
+*.exp
+*.lib
+*.dll
+*.ilk
+*.aps
+*.ncb
+*.log
+*.tlog
+*.vshost.exe
+[Tt]est[Rr]esult*
+
+# Visual Studio code browsing database
+*.sdf
+*.opensdf
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Visual Studio Installer project
+*.vdproj
+
+# Rider
+.idea/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code directories
+.vscode/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+*.ipr
+*.iws
+
+# User-specific files
+*.suo
+*.user
+*.suser
+
+# Rider
+.idea/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Visual Studio 2019 configuration folder
+.vs2019/
+
+# Visual Studio 2022 specific
+.vs2022/
