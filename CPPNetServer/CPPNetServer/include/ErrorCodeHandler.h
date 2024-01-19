@@ -11,6 +11,7 @@ public:
     ErrorCodeHandler();
    
     void PrintWinSockError(int errorCode, const std::string& contextMessage);
+    void HandleErrorAndCleanup(const SOCKET& socket, const std::string& errorMessage);
     std::string PrintUnknownError(int errorCode);
 
 };

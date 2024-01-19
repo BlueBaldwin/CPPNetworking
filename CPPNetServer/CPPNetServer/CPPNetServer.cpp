@@ -7,22 +7,46 @@
 #include "WSAErrorCodeMap.h"
 #include "ErrorCodeHandler.h"
 
+void InitialiseServer(SOCKET&, ErrorCodeHandler&);
+void BindServerSocket(const SOCKET& serverSocket, int port, ErrorCodeHandler& errorCodeHandler);
+void AcceptConnection(SOCKET& serverSocket, SOCKET& acceptSocket, ErrorCodeHandler&);
+void HandleClientCommunication(SOCKET&);
+void ListenOnSocket(SOCKET& serverSocket, ErrorCodeHandler errorCodeHandler);
+void HandleClientCommunication(SOCKET& acceptSocket);
+
 int main(int argc, char* argv[])
 {
 	SOCKET serverSocket, acceptSocket;
-	int port = 55555;
+	serverSocket = INVALID_SOCKET;
+	ErrorCodeHandler errorCodeHandler;
+
+	try
+	{
+		InitialiseServer(serverSocket, errorCodeHandler);
+		BindServerSocket(serverSocket, 55555, errorCodeHandler);
+		ListenOnSocket(serverSocket, errorCodeHandler);
+		AcceptConnection(serverSocket, acceptSocket, errorCodeHandler);
+		HandleClientCommunication(acceptSocket);
+	}
+	catch (const std::runtime_error& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		return 0;
+	}
+
+	WSACleanup();
+}
+
+
+void InitialiseServer(SOCKET& serverSocket, ErrorCodeHandler& errorCodeHandler) 
+{
 	WSADATA wsaData;
 	int wsaerr;
 	WORD wVersionRequested = MAKEWORD(2, 2);
 	wsaerr = WSAStartup(wVersionRequested, &wsaData);
 
-	ErrorCodeHandler errorCodeHandler;
-
-
 	if (wsaerr != 0)
 	{
-		errorCodeHandler.PrintWinSockError(WSAGetLastError(), "The Winsick dll not found!");
-		return 0;
+		errorCodeHandler.HandleErrorAndCleanup(serverSocket, "Failed to initialise Winsock: The Winsick dll not found!");
 	}
 	else
 	{
@@ -30,58 +54,62 @@ int main(int argc, char* argv[])
 		std::cout << "The Status: " << wsaData.szSystemStatus << std::endl;
 	}
 
-	serverSocket = INVALID_SOCKET;
 	serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (serverSocket == INVALID_SOCKET)
 	{
-		errorCodeHandler.PrintWinSockError(WSAGetLastError(), "Error at Socket(): ");
-		WSACleanup();
-		return 0;
+		errorCodeHandler.HandleErrorAndCleanup(serverSocket, "Error at Socket(): ");
 	}
 	else
 	{
 		std::cout << "socket() is OK! " << std::endl;
 	}
+}
 
+void BindServerSocket(const SOCKET& serverSocket, int port, ErrorCodeHandler& errorCodeHandler)
+{
 	sockaddr_in service;
 	service.sin_family = AF_INET;
 	InetPton(AF_INET, _T("127.0.0.1"), &service.sin_addr.s_addr);
 	service.sin_port = htons(port);
 	if (bind(serverSocket, (SOCKADDR*)&service, sizeof(service)) == SOCKET_ERROR)
 	{
-		errorCodeHandler.PrintWinSockError(WSAGetLastError(), "bind() failed: ");
-		closesocket(serverSocket);
-		WSACleanup();
-		return 0;
+		errorCodeHandler.HandleErrorAndCleanup(serverSocket, "Failed to bind socket: bind() failed. ");
 	}
 	else
 	{
 		std::cout << "bind() is OK!\n";
 	}
+}
 
-	// Listen on that socket
-	if (listen(serverSocket, 1) == SOCKET_ERROR)
-	{
-		errorCodeHandler.PrintWinSockError(WSAGetLastError(), "listen(): Error listening on socket");
-	}
-	else
-	{
-		std::cout << "listen() is OK! Waiting for connections...\n";
-	}
-
+void AcceptConnection(SOCKET& serverSocket, SOCKET& acceptSocket, ErrorCodeHandler& errorCodeHandler)
+{
 	// Accept 
 	acceptSocket = accept(serverSocket, NULL, NULL);
 	if (acceptSocket == INVALID_SOCKET)
 	{
-		errorCodeHandler.PrintWinSockError(WSAGetLastError(), "accept failed: ");
-		WSACleanup();
-		return -1;
+		errorCodeHandler.HandleErrorAndCleanup(serverSocket, "accept failed: ");
 	}
 	else
 	{
 		std::cout << "Accepted connection\n";
 	}
+}
 
+void ListenOnSocket(SOCKET& serverSocket, ErrorCodeHandler errorCodeHandler)
+{
+	// Listen on that socket
+	if (listen(serverSocket, 1) == SOCKET_ERROR)
+	{
+		errorCodeHandler.HandleErrorAndCleanup(serverSocket, "listen(): Error listening on socket");
+	}
+	else
+	{
+		std::cout << "listen() is OK! Waiting for connections...\n";
+	}
+}
+
+void HandleClientCommunication(SOCKET& acceptSocket)
+{
 	bool Quit{ false };
 
 	const int bufferSize{ 200 };
@@ -116,6 +144,4 @@ int main(int argc, char* argv[])
 
 	std::cout << "Press enter to continue...";
 	std::cin.get();
-
-	WSACleanup();
 }

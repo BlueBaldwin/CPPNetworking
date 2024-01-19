@@ -1,4 +1,6 @@
 #include <iostream>
+#include <winsock2.h>
+
 #include "ErrorCodeHandler.h"
 
 
@@ -18,6 +20,17 @@ void ErrorCodeHandler::PrintWinSockError(int errorCode, const std::string& conte
 	{
 		std::cout << contextMessage << ": " << PrintUnknownError(errorCode) << std::endl;
 	}
+}
+
+void ErrorCodeHandler::HandleErrorAndCleanup(const SOCKET& socket, const std::string& errorMessage)
+{
+	PrintWinSockError(WSAGetLastError(), errorMessage);
+	if (socket != INVALID_SOCKET)
+	{
+		closesocket(socket);
+	}
+	WSACleanup();
+	throw std::runtime_error(errorMessage);
 }
 
 std::string ErrorCodeHandler::PrintUnknownError(int errorCode)
