@@ -8,6 +8,7 @@
 #include "ErrorCodeHandler.h"
 
 void InitialiseServer(SOCKET&, ErrorCodeHandler&);
+<<<<<<< HEAD
 void BindServerSocket(const SOCKET& serverSocket, int port, ErrorCodeHandler& errorCodeHandler);
 void AcceptConnection(SOCKET& serverSocket, SOCKET& acceptSocket, ErrorCodeHandler&);
 void HandleClientCommunication(SOCKET&);
@@ -47,11 +48,6 @@ void InitialiseServer(SOCKET& serverSocket, ErrorCodeHandler& errorCodeHandler)
 	if (wsaerr != 0)
 	{
 		errorCodeHandler.HandleErrorAndCleanup(serverSocket, "Failed to initialise Winsock: The Winsick dll not found!");
-	}
-	else
-	{
-		std::cout << "The Winsock dll found!" << std::endl;
-		std::cout << "The Status: " << wsaData.szSystemStatus << std::endl;
 	}
 
 	serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -144,4 +140,56 @@ void HandleClientCommunication(SOCKET& acceptSocket)
 
 	std::cout << "Press enter to continue...";
 	std::cin.get();
+}
+
+
+void InitialiseServer(SOCKET& serverSocket, ErrorCodeHandler& errorCodeHandler) 
+{
+	WSADATA wsaData;
+	int wsaerr;
+	WORD wVersionRequested = MAKEWORD(2, 2);
+	wsaerr = WSAStartup(wVersionRequested, &wsaData);
+
+	if (wsaerr != 0)
+	{
+		errorCodeHandler.PrintWinSockError(WSAGetLastError(), "The Winsick dll not found!");
+		throw std::runtime_error("Failed to initialise Winsock");
+	}
+	else
+	{
+		std::cout << "The Winsock dll found!" << std::endl;
+		std::cout << "The Status: " << wsaData.szSystemStatus << std::endl;
+	}
+
+	serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (serverSocket == INVALID_SOCKET)
+	{
+		errorCodeHandler.PrintWinSockError(WSAGetLastError(), "Error at Socket(): ");
+		WSACleanup();
+		throw std::runtime_error("Error at socket");
+	}
+	else
+	{
+		std::cout << "socket() is OK! " << std::endl;
+	}
+}
+
+int BindServerSocket(const SOCKET& serverSocket, int port, ErrorCodeHandler& errorCodeHandler)
+{
+	sockaddr_in service;
+	service.sin_family = AF_INET;
+	InetPton(AF_INET, _T("127.0.0.1"), &service.sin_addr.s_addr);
+	service.sin_port = htons(port);
+	if (bind(serverSocket, (SOCKADDR*)&service, sizeof(service)) == SOCKET_ERROR)
+	{
+		errorCodeHandler.PrintWinSockError(WSAGetLastError(), "bind() failed: ");
+		closesocket(serverSocket);
+		WSACleanup();
+		return 0;
+	}
+	else
+	{
+		std::cout << "bind() is OK!\n";
+	}
+	return {};
 }
