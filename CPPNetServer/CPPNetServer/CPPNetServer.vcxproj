@@ -18,6 +18,12 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\CPPNetServer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\CPPNetServer.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -134,16 +140,6 @@
       <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="CPPNetServer.cpp" />
-    <ClCompile Include="source\ErrorCodeHandler.cpp" />
-    <ClCompile Include="source\WSAErrorCodeMap.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="CPPNetServer.h" />
-    <ClInclude Include="include\ErrorCodeHandler.h" />
-    <ClInclude Include="include\WSAErrorCodeMap.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

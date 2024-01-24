@@ -129,3 +129,6 @@ $RECYCLE.BIN/
 
 # Visual Studio 2022 specific
 .vs2022/
+
+#Blocking the ErrorLib folder for local organisation
+/ErrorLibrary/

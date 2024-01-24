@@ -4,39 +4,14 @@
 
 #include <iostream>
 
+void InitialiseClient(SOCKET& clientSocket, ErrorCodeHandler errorCodeHandler);
+
+
 int main(int argc, char* argv[])
 {
 	SOCKET clientSocket;
 	int port = 55555;
-	WSADATA wsaData;
-	int wsaerr;
-	WORD wVersionRequested = MAKEWORD(2, 2);
-	wsaerr = WSAStartup(wVersionRequested, &wsaData);
-
-	if (wsaerr != 0)
-	{
-		std::cerr << "The Winsock dll not found!" << std::endl;
-		return 0;
-	}
-	else
-	{
-		std::cout << "The Winsock dll found!" << std::endl;
-		std::cout << "The Status: " << wsaData.szSystemStatus << std::endl;
-	}
-
-	// Create a socket
-	clientSocket = INVALID_SOCKET;
-	clientSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	if (clientSocket == INVALID_SOCKET)
-	{
-		std::cerr << "Error at Socket(): " << WSAGetLastError() << std::endl;
-		WSACleanup();
-		return 0;
-	}
-	else
-	{
-		std::cout << "socket() is OK! " << std::endl;
-	}
+	
 
 	sockaddr_in clientService;
 	clientService.sin_family = AF_INET;

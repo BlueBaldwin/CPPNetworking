@@ -1,0 +1,3 @@
+[submodule "neterrorlibrary"]
+	path = neterrorlibrary
+	url = https://github.com/bluebaldwin/neterrorlibrary
